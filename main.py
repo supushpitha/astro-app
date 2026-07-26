@@ -24,7 +24,13 @@ class CosmicRequest(BaseModel):
 @app.post("/api/generate")
 async def generate_report(payload: CosmicRequest):
     if payload.service == "porondum":
-        prompt = f"Act as an ancient, mystical Vedic astrologer. The user has provided birth details for two people: {payload.data}. Write a 3-paragraph cosmic compatibility report. Use HTML tags like  for bolding and  for paragraph breaks. Keep it mystical but structured."
+    prompt = f"""Act as an ancient, mystical Vedic astrologer. The user has provided birth details for two people: {payload.data}. 
+    Write a detailed cosmic compatibility report. 
+    CRITICAL: You MUST include a 4x4 HTML table representing a traditional South Indian Vedic astrology chart for both individuals. 
+    Assign the class 'vedic-chart' to the tables, and assign the class 'empty-cell' to the 4 middle squares of the grid. 
+    Use HTML tags like  and 
+
+. Keep it mystical, structured, and visually clean. Generate another one from Sinhalese language too"""
     elif payload.service == "kendara":
         prompt = f"Act as an ancient Vedic astrologer. Generate a mystical birth chart overview for someone born with these details: {payload.data}. Use HTML formatting like  and ."
     else:
