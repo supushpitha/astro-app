@@ -1,56 +1,316 @@
-/* Big, readable, scrolling glass box for the AI output */
-.cosmic-glass-box {
-  background: rgba(15, 10, 30, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(138, 43, 226, 0.3);
-  border-radius: 16px;
-  padding: 2rem;
-  max-height: 65vh; /* Prevents it from going off-screen */
-  overflow-y: auto; /* Adds a scrollbar if the text is long */
-  font-size: 1.15rem;
-  line-height: 1.8;
-  color: #e0d8f0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+/* ===================================================
+   1. GLOBAL VARIABLES & RESET
+   =================================================== */
+:root {
+  --bg-color: #080512;
+  --text-main: #e0d8f0;
+  --text-muted: #a39db3;
+  --accent-purple: #8a2be2;
+  --accent-gold: #d4af37;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glow-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
 }
 
-/* Form input styling for easier typing */
-.input-field {
-  width: 100%;
-  padding: 12px 16px;
-  margin: 8px 0;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  color: #fff;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ===================================================
+   2. BACKGROUND CANVAS
+   =================================================== */
+#bokeh-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ===================================================
+   3. BUTTONS & INTERACTIVE ELEMENTS
+   =================================================== */
+.button-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+button {
+  font-family: inherit;
   font-size: 1rem;
 }
 
-.input-field:focus {
-  border-color: #8a2be2;
-  outline: none;
-  background: rgba(255, 255, 255, 0.1);
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-purple), #5b1a9e);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--glow-shadow);
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-/* AI-Generated Vedic Chart Styling */
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(138, 43, 226, 0.6);
+  background: linear-gradient(135deg, #9933ff, #6b1ebd);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--text-muted);
+  padding: 12px 28px;
+  border-radius: 8px;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-main);
+}
+
+/* ===================================================
+   4. DYNAMIC MODAL (GLASSMORPHISM)
+   =================================================== */
+#app-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(4, 2, 8, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  
+  /* Animation setup */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#app-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: rgba(18, 12, 35, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 650px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+#modal-title {
+  font-size: 2rem;
+  color: var(--accent-gold);
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+#modal-desc {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ===================================================
+   5. FORM STYLING
+   =================================================== */
+.form-group-title {
+  font-size: 1.1rem;
+  color: var(--accent-gold);
+  margin: 1.5rem 0 0.75rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.form-row > * {
+  flex: 1;
+  min-width: 200px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  margin: 8px 0;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.input-field:focus {
+  border-color: var(--accent-purple);
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 12px rgba(138, 43, 226, 0.2);
+}
+
+/* Invert standard browser calendar/clock icons for dark mode */
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* ===================================================
+   6. LOADING ANIMATION
+   =================================================== */
+#modal-loading-view {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.loader-ring {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(138, 43, 226, 0.1);
+  border-top: 3px solid var(--accent-purple);
+  border-radius: 50%;
+  animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  margin: 0 auto 25px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===================================================
+   7. AI RESULT VIEW (GLASS BOX & PDF AREA)
+   =================================================== */
+.cosmic-glass-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(138, 43, 226, 0.2);
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  font-size: 1.05rem;
+  color: var(--text-main);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.cosmic-glass-box h1,
+.cosmic-glass-box h2,
+.cosmic-glass-box h3 {
+  color: var(--accent-gold);
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+  font-weight: 400;
+}
+
+.cosmic-glass-box p {
+  margin-bottom: 1rem;
+}
+
+.cosmic-glass-box b,
+.cosmic-glass-box strong {
+  color: #fff;
+}
+
+/* Custom Scrollbar for Modal and Output Box */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(138, 43, 226, 0.4);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(138, 43, 226, 0.6);
+}
+
+/* ===================================================
+   8. VEDIC CHART AI TABLE STYLING
+   =================================================== */
 .vedic-chart {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
   margin: 2rem auto;
   border-collapse: collapse;
   table-layout: fixed;
+  background: rgba(15, 10, 30, 0.5);
 }
 
 .vedic-chart td {
-  border: 1px solid rgba(212, 175, 55, 0.6); /* Gold borders */
+  border: 1.5px solid rgba(212, 175, 55, 0.7); /* Golden borders */
   width: 25%;
-  height: 80px;
+  height: 85px;
   text-align: center;
   vertical-align: middle;
   font-size: 0.9rem;
-  background: rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+  color: #fff;
+  padding: 4px;
 }
 
+/* Make the center 4 squares transparent to create the classic South Indian layout */
 .vedic-chart td.empty-cell {
   border: none;
   background: transparent;
