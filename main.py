@@ -1,13 +1,11 @@
 import os
-import google.generativeai as genai
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from groq import Groq
 
-# Initialize the server
 app = FastAPI()
 
-# Enable CORS so your GitHub Pages frontend can talk to this server
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -16,27 +14,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Setup the AI using an Environment Variable (secure way to store keys)
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+# Initialize the Groq client
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-# 1. Print all valid models to Render logs so we never have to guess
-print("--- AVAILABLE AI MODELS ---")
-for m in genai.list_models():
-    if 'generateContent' in m.supported_generation_methods:
-        print(m.name)
-print("---------------------------")
-
-# 2. Try the current standard flash model
-model = genai.GenerativeModel('gemini-2.0-flash')
-
-# Define the incoming data structure
 class CosmicRequest(BaseModel):
     service: str
     data: list
 
 @app.post("/api/generate")
 async def generate_report(payload: CosmicRequest):
-    # Create a prompt based on the service the user clicked
     if payload.service == "porondum":
         prompt = f"Act as an ancient, mystical Vedic astrologer. The user has provided birth details for two people: {payload.data}. Write a 3-paragraph cosmic compatibility report. Use HTML tags like  for bolding and  for paragraph breaks. Keep it mystical but structured."
     elif payload.service == "kendara":
@@ -44,8 +30,15 @@ async def generate_report(payload: CosmicRequest):
     else:
         prompt = f"Act as a Vedic astrologer. Determine an auspicious time based on these event details: {payload.data}. Use HTML formatting."
 
-    # Send the prompt to Gemini
-    response = model.generate_content(prompt)
+    # Send the prompt to Groq (using Meta's Llama 3 model)
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        model="llama3-8b-8192",
+    )
     
-    # Return the AI's text to your frontend
-    return {"report": response.text}
+    return {"report": chat_completion.choices[0].message.content}
