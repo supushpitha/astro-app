@@ -167,7 +167,7 @@ async function handleFormSubmit(event) {
   try {
     // 4. Make the actual API call
     // REPLACE this URL with your actual Python server's URL (e.g., a Render or Heroku link)
-    const response = await fetch('https://astro-app-2-e1gf.onrender.com', {
+    const response = await fetch('https://astro-app-2-e1gf.onrender.com/api/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
