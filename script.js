@@ -203,3 +203,24 @@ async function handleFormSubmit(event) {
     `;
   }
 }
+
+function downloadPDF() {
+  // Temporarily hide the scrollbar so the PDF prints the whole box
+  const exportArea = document.getElementById('pdf-export-area');
+  exportArea.style.maxHeight = 'none';
+  exportArea.style.overflow = 'visible';
+
+  const opt = {
+    margin:       0.5,
+    filename:     'Cosmic_Report.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, backgroundColor: '#0f0a1e' },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+
+  // Generate the PDF, then restore the scrollable box
+  html2pdf().set(opt).from(exportArea).save().then(() => {
+    exportArea.style.maxHeight = '65vh';
+    exportArea.style.overflowY = 'auto';
+  });
+}
