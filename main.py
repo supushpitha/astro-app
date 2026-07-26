@@ -23,18 +23,26 @@ class CosmicRequest(BaseModel):
 
 @app.post("/api/generate")
 async def generate_report(payload: CosmicRequest):
+    # Inside your POST endpoint function...
+    
     if payload.service == "porondum":
-    prompt = f"""Act as an ancient, mystical Vedic astrologer. The user has provided birth details for two people: {payload.data}. 
-    Write a detailed cosmic compatibility report. 
-    CRITICAL: You MUST include a 4x4 HTML table representing a traditional South Indian Vedic astrology chart for both individuals. 
-    Assign the class 'vedic-chart' to the tables, and assign the class 'empty-cell' to the 4 middle squares of the grid. 
-    Use HTML tags like  and 
-
-. Keep it mystical, structured, and visually clean. Generate another one from Sinhalese language too"""
+        prompt = f"""Act as an ancient, mystical Vedic astrologer. The user has provided birth details for two people: {payload.data}. 
+        Write a detailed cosmic compatibility report. 
+        CRITICAL: You MUST include a 4x4 HTML table representing a traditional South Indian Vedic astrology chart for both individuals. 
+        Assign the class 'vedic-chart' to the tables, and assign the class 'empty-cell' to the 4 middle squares of the grid. 
+        Use HTML tags like <b> and <br><br>. Keep it mystical, structured, and visually clean. Add a description in sinhalese language too for both individuals shared future"""
+        
     elif payload.service == "kendara":
-        prompt = f"Act as an ancient Vedic astrologer. Generate a mystical birth chart overview for someone born with these details: {payload.data}. Use HTML formatting like  and ."
-    else:
-        prompt = f"Act as a Vedic astrologer. Determine an auspicious time based on these event details: {payload.data}. Use HTML formatting."
+        prompt = f"""Act as an ancient, mystical Vedic astrologer. The user has provided birth details: {payload.data}. 
+        Write a detailed reading of their birth chart.
+        CRITICAL: You MUST include a 4x4 HTML table representing a traditional South Indian Vedic astrology chart. 
+        Assign the class 'vedic-chart' to the table, and assign the class 'empty-cell' to the 4 middle squares. 
+        Use HTML tags. Keep it visually clean."""
+        
+    elif payload.service == "nakath":
+        prompt = f"""Act as an ancient, mystical Vedic astrologer. The user has provided event details: {payload.data}. 
+        Determine the most auspicious date and time (Nakath) for this event. 
+        Format the response beautifully using HTML tags like <b>, <h3>, and <br><br>."""
 
     # Send the prompt to Groq (using Meta's Llama 3 model)
     chat_completion = client.chat.completions.create(
