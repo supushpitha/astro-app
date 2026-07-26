@@ -149,31 +149,57 @@ function resetForm() {
 async function handleFormSubmit(event) {
   event.preventDefault();
 
-  // Show Loading Spinner
+  // 1. Show Loading Spinner
   document.getElementById('modal-form-view').classList.add('hidden');
   document.getElementById('modal-loading-view').classList.remove('hidden');
 
-  /* 
-     REPLACE THIS BLOCK WITH YOUR ACTUAL BACKEND API CALL:
-     
-     const response = await fetch('YOUR_BACKEND_API_URL', {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({ service: currentService, data: ... })
-     });
-     const result = await response.json();
-  */
+  // 2. Gather Data from the form fields
+  // This grabs all input values and puts them in an array
+  const inputs = document.querySelectorAll('#astro-form .input-field');
+  const formData = Array.from(inputs).map(input => input.value);
 
-  // Simulated AI API delay for demonstration
-  setTimeout(() => {
+  // 3. Prepare the JSON payload
+  const payload = {
+    service: currentService, // Will be 'porondum', 'kendara', or 'nakath'
+    data: formData
+  };
+
+  try {
+    // 4. Make the actual API call
+    // REPLACE this URL with your actual Python server's URL (e.g., a Render or Heroku link)
+    const response = await fetch('https://your-python-backend-url.com/api/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+
+    // 5. Parse the JSON returned by your Python backend
+    const result = await response.json();
+
+    // 6. Hide loading, show results
     document.getElementById('modal-loading-view').classList.add('hidden');
     document.getElementById('modal-result-view').classList.remove('hidden');
 
+    // 7. Inject the AI response into the UI
+    // This assumes your Python code returns JSON like: {"report": "Your cosmic alignment is..."}
     const outputContainer = document.getElementById('report-output-content');
-    outputContainer.innerHTML = `
-      <p><strong>Overall Harmony Score: 88%</strong></p><br/>
-      <p><strong>Planetary Alignment:</strong> Jupiter and Venus are in favorable aspect, providing strong mutual understanding and emotional stability.</p><br/>
-      <p><strong>Nadi & Kuta Harmony:</strong> High compatibility detected in key lunar mansions. Minor tension indicated around Mars placement, easily balanced through collaborative decision-making.</p>
+    outputContainer.innerHTML = `<p>${result.report}</p>`;
+
+  } catch (error) {
+    // 8. Handle any errors (like server being offline)
+    console.error("API Connection Error:", error);
+    document.getElementById('modal-loading-view').classList.add('hidden');
+    document.getElementById('modal-result-view').classList.remove('hidden');
+    
+    document.getElementById('report-output-content').innerHTML = `
+      <p style="color: #e06c75; font-weight: 600;">The cosmic connection was interrupted.</p>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 8px;">Please ensure the backend server is running. Error details: ${error.message}</p>
     `;
-  }, 2500);
+  }
 }
