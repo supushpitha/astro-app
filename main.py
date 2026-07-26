@@ -38,7 +38,7 @@ async def generate_report(payload: CosmicRequest):
                 "content": prompt,
             }
         ],
-       model="llama-3.1-8b-instant",,
+       model="llama-3.1-8b-instant",
     )
     
     return {"report": chat_completion.choices[0].message.content}
