@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Celestial AI — Sacred Astrological Insights</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Dynamic Bokeh/Particle Canvas -->
+  <canvas id="bokeh-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-symbol">✧</span> CELESTIAL
+    </div>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <button class="gold-btn-outline" onclick="openServiceModal('porondum')">Porondum Check</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-badge">✧ AI-POWERED ASTROLOGICAL SYNTHESIS</div>
+    <h1>Align Your Path With The Stars</h1>
+    <p>Discover deep cosmic compatibility, precise planetary positions, and mathematical life insights powered by ancient wisdom and intelligence.</p>
+    <a href="#services" class="gold-btn">Explore Services</a>
+  </header>
+
+  <!-- Services Section -->
+  <section class="services-container" id="services">
+    <h2 class="section-title">Sacred Offerings</h2>
+    <p class="section-subtitle">Select a service to generate your custom cosmic synthesis report.</p>
+
+    <div class="services-grid">
+      <!-- Service 1: Porondum Check -->
+      <div class="glass-card" onclick="openServiceModal('porondum')">
+        <div class="card-icon">☯</div>
+        <h3>Porondum Check</h3>
+        <p>Comprehensive relationship compatibility analysis based on planetary alignments and birth charts.</p>
+        <span class="card-link">Start Analysis →</span>
+      </div>
+
+      <!-- Service 2: Kendara / Birth Chart -->
+      <div class="glass-card" onclick="openServiceModal('kendara')">
+        <div class="card-icon">☸</div>
+        <h3>Kendara Birth Chart</h3>
+        <p>Generate a complete overview of your natal positions, house strengths, and life journey path.</p>
+        <span class="card-link">Calculate Chart →</span>
+      </div>
+
+      <!-- Service 3: Nakath Calculator -->
+      <div class="glass-card" onclick="openServiceModal('nakath')">
+        <div class="card-icon">⏳</div>
+        <h3>Auspicious Nakath</h3>
+        <p>Mathematical calculations for optimal timing for ceremonies, business launches, and travel.</p>
+        <span class="card-link">Find Timing →</span>
+      </div>
+
+      <!-- Service 4: Daily Transits -->
+      <div class="glass-card" onclick="openServiceModal('transits')">
+        <div class="card-icon">🌙</div>
+        <h3>Daily Transits</h3>
+        <p>Understand how current lunar phases and planetary movements influence your daily decisions.</p>
+        <span class="card-link">View Transits →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Modal Container -->
+  <div class="modal-overlay" id="app-modal">
+    <div class="modal-content glass-card-modal">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+
+      <!-- Form View -->
+      <div id="modal-form-view">
+        <h2 id="modal-title" class="modal-heading">Porondum Compatibility Analysis</h2>
+        <p id="modal-desc" class="modal-subtext">Enter birth details for both individuals to generate the astrological synthesis.</p>
+
+        <form id="astro-form" onsubmit="handleFormSubmit(event)">
+          <div id="dynamic-fields">
+            <!-- Dynamic Form Fields Injected via JavaScript -->
+          </div>
+          <button type="submit" class="gold-btn full-width mt-20">Generate Report</button>
+        </form>
+      </div>
+
+      <!-- Loading View -->
+      <div id="modal-loading-view" class="hidden text-center">
+        <div class="cosmic-spinner"></div>
+        <h3 class="mt-20">Consulting Planetary Coordinates...</h3>
+        <p class="modal-subtext">Our AI engine is compiling your mathematical & astrological synthesis report.</p>
+      </div>
+
+      <!-- Results View -->
+      <div id="modal-result-view" class="hidden">
+        <div class="result-header">
+          <span class="badge-gold">SYNTHESIS COMPLETE</span>
+          <h2>Your Cosmic Report</h2>
+        </div>
+        <div id="report-output-content" class="report-body">
+          <!-- AI Generated Text Injected Here -->
+        </div>
+        <button class="gold-btn-outline full-width mt-20" onclick="resetForm()">Perform Another Reading</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
