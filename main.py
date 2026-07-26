@@ -18,7 +18,7 @@ app.add_middleware(
 
 # Setup the AI using an Environment Variable (secure way to store keys)
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 # Define the incoming data structure
 class CosmicRequest(BaseModel):
