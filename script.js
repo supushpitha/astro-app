@@ -130,6 +130,20 @@ function openServiceModal(serviceKey) {
     `;
   }
 
+  // Set dynamic date boundaries
+  const today = new Date().toISOString().split('T')[0];
+  const dateInputs = document.querySelectorAll('#dynamic-fields input[type="date"]');
+  
+  dateInputs.forEach(input => {
+    if (serviceKey === 'nakath') {
+      // For Nakath (Auspicious Timing), the event must be today or in the future
+      input.setAttribute('min', today); 
+    } else {
+      // For Porondum & Kendara (Births), the date must be today or in the past
+      input.setAttribute('max', today); 
+    }
+  });
+
   modal.classList.add('active');
 }
 
@@ -149,24 +163,40 @@ function resetForm() {
 async function handleFormSubmit(event) {
   event.preventDefault();
 
-  // 1. Show Loading Spinner
+  // 1. Trigger the browser's native validation popups if fields are missing
+  const form = document.getElementById('astro-form') || event.target;
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return; // Stop the function if the form is incomplete
+  }
+
+  // 2. Show Loading Spinner
   document.getElementById('modal-form-view').classList.add('hidden');
   document.getElementById('modal-loading-view').classList.remove('hidden');
 
-  // 2. Gather Data from the form fields
-  // This grabs all input values and puts them in an array
-  const inputs = document.querySelectorAll('#astro-form .input-field');
-  const formData = Array.from(inputs).map(input => input.value);
+  // 3. Gather and properly format Data for the AI
+  const inputs = document.querySelectorAll('#dynamic-fields .input-field');
+  let formattedData = [];
+  
+  inputs.forEach(input => {
+    // Grab the placeholder (e.g., "Full Name") or default to the input type (e.g., "date")
+    let label = input.placeholder || input.type.toUpperCase();
+    
+    // Format times to be readable (e.g., "14:30" becomes "14:30 (24h format)")
+    let value = input.value;
+    if (input.type === 'time') value += " (24h format)";
+    
+    formattedData.push(`${label}: ${value}`);
+  });
 
-  // 3. Prepare the JSON payload
+  // 4. Prepare the JSON payload
   const payload = {
     service: currentService, // Will be 'porondum', 'kendara', or 'nakath'
-    data: formData
+    data: formattedData.join(', ')
   };
 
   try {
-    // 4. Make the actual API call
-    // REPLACE this URL with your actual Python server's URL (e.g., a Render or Heroku link)
+    // 5. Make the actual API call
     const response = await fetch('https://astro-app-3.onrender.com/api/generate', {
       method: 'POST',
       headers: {
@@ -179,20 +209,19 @@ async function handleFormSubmit(event) {
       throw new Error(`Server responded with status: ${response.status}`);
     }
 
-    // 5. Parse the JSON returned by your Python backend
+    // 6. Parse the JSON returned by your Python backend
     const result = await response.json();
 
-    // 6. Hide loading, show results
+    // 7. Hide loading, show results
     document.getElementById('modal-loading-view').classList.add('hidden');
     document.getElementById('modal-result-view').classList.remove('hidden');
 
-    // 7. Inject the AI response into the UI
-    // This assumes your Python code returns JSON like: {"report": "Your cosmic alignment is..."}
+    // 8. Inject the AI response into the UI
     const outputContainer = document.getElementById('report-output-content');
-    outputContainer.innerHTML = `<p>${result.report}</p>`;
+    outputContainer.innerHTML = `<div>${result.report}</div>`;
 
   } catch (error) {
-    // 8. Handle any errors (like server being offline)
+    // 9. Handle any errors (like server being offline)
     console.error("API Connection Error:", error);
     document.getElementById('modal-loading-view').classList.add('hidden');
     document.getElementById('modal-result-view').classList.remove('hidden');
@@ -204,23 +233,34 @@ async function handleFormSubmit(event) {
   }
 }
 
+/* ===================================================
+   4. PDF EXPORT LOGIC
+   =================================================== */
 function downloadPDF() {
   // Temporarily hide the scrollbar so the PDF prints the whole box
   const exportArea = document.getElementById('pdf-export-area');
+  
+  // Save original styles to revert later
+  const originalMaxHeight = exportArea.style.maxHeight;
+  const originalOverflow = exportArea.style.overflow;
+  const originalOverflowY = exportArea.style.overflowY;
+
   exportArea.style.maxHeight = 'none';
   exportArea.style.overflow = 'visible';
+  exportArea.style.overflowY = 'visible';
 
   const opt = {
     margin:       0.5,
     filename:     'Cosmic_Report.pdf',
     image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, backgroundColor: '#0f0a1e' },
+    html2canvas:  { scale: 2, backgroundColor: '#0f0a1e', useCORS: true },
     jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
   };
 
   // Generate the PDF, then restore the scrollable box
   html2pdf().set(opt).from(exportArea).save().then(() => {
-    exportArea.style.maxHeight = '65vh';
-    exportArea.style.overflowY = 'auto';
+    exportArea.style.maxHeight = originalMaxHeight || '65vh';
+    exportArea.style.overflow = originalOverflow || '';
+    exportArea.style.overflowY = originalOverflowY || 'auto';
   });
 }
