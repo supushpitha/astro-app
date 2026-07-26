@@ -1,118 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Celestial AI — Sacred Astrological Insights</title>
-  
-  <!-- Fonts -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vedic AI Astrology | Cosmic Destinies</title>
+
+  <!-- Mystical & Modern Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css" />
+  <!-- Modern Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- PDF Export Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Dynamic Bokeh/Particle Canvas -->
+  <!-- Background Particle Engine -->
   <canvas id="bokeh-canvas"></canvas>
 
-  <!-- Navigation -->
-  <nav class="navbar">
-    <div class="logo">
-      <span class="logo-symbol">✧</span> CELESTIAL
-    </div>
-    <div class="nav-links">
-      <a href="#services">Services</a>
-      <a href="#about">About</a>
-      <button class="gold-btn-outline" onclick="openServiceModal('porondum')">Porondum Check</button>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <header class="hero">
-    <div class="hero-badge">✧ AI-POWERED ASTROLOGICAL SYNTHESIS</div>
-    <h1>Align Your Path With The Stars</h1>
-    <p>Discover deep cosmic compatibility, precise planetary positions, and mathematical life insights powered by ancient wisdom and intelligence.</p>
-    <a href="#services" class="gold-btn">Explore Services</a>
-  </header>
-
-  <!-- Services Section -->
-  <section class="services-container" id="services">
-    <h2 class="section-title">Sacred Offerings</h2>
-    <p class="section-subtitle">Select a service to generate your custom cosmic synthesis report.</p>
+  <!-- Main Dashboard -->
+  <main class="app-container">
+    <header class="hero-section">
+      <h1>Cosmic Intelligence</h1>
+      <p>AI-Powered Vedic Astrology, Compatibility, and Auspicious Timing.</p>
+    </header>
 
     <div class="services-grid">
-      <!-- Service 1: Porondum Check -->
-      <div class="glass-card" onclick="openServiceModal('porondum')">
-        <div class="card-icon">☯</div>
-        <h3>Porondum Check</h3>
-        <p>Comprehensive relationship compatibility analysis based on planetary alignments and birth charts.</p>
-        <span class="card-link">Start Analysis →</span>
+      <!-- Porondum Card -->
+      <div class="service-card" onclick="openServiceModal('porondum')">
+        <div class="icon-ring"><i class="fa-solid fa-infinity"></i></div>
+        <h2>Porondum Check</h2>
+        <p>Deep relationship compatibility analysis based on ancient planetary alignments.</p>
+        <button class="btn-text">Check Compatibility <i class="fa-solid fa-arrow-right"></i></button>
       </div>
 
-      <!-- Service 2: Kendara / Birth Chart -->
-      <div class="glass-card" onclick="openServiceModal('kendara')">
-        <div class="card-icon">☸</div>
-        <h3>Kendara Birth Chart</h3>
-        <p>Generate a complete overview of your natal positions, house strengths, and life journey path.</p>
-        <span class="card-link">Calculate Chart →</span>
+      <!-- Kendara Card -->
+      <div class="service-card" onclick="openServiceModal('kendara')">
+        <div class="icon-ring"><i class="fa-solid fa-star-and-crescent"></i></div>
+        <h2>Kendara Chart</h2>
+        <p>Generate and interpret your complete 12-house Vedic birth chart.</p>
+        <button class="btn-text">Read Your Chart <i class="fa-solid fa-arrow-right"></i></button>
       </div>
 
-      <!-- Service 3: Nakath Calculator -->
-      <div class="glass-card" onclick="openServiceModal('nakath')">
-        <div class="card-icon">⏳</div>
-        <h3>Auspicious Nakath</h3>
-        <p>Mathematical calculations for optimal timing for ceremonies, business launches, and travel.</p>
-        <span class="card-link">Find Timing →</span>
-      </div>
-
-      <!-- Service 4: Daily Transits -->
-      <div class="glass-card" onclick="openServiceModal('transits')">
-        <div class="card-icon">🌙</div>
-        <h3>Daily Transits</h3>
-        <p>Understand how current lunar phases and planetary movements influence your daily decisions.</p>
-        <span class="card-link">View Transits →</span>
+      <!-- Nakath Card -->
+      <div class="service-card" onclick="openServiceModal('nakath')">
+        <div class="icon-ring"><i class="fa-solid fa-hourglass-half"></i></div>
+        <h2>Nakath Timing</h2>
+        <p>Calculate the most auspicious date and time for major life events.</p>
+        <button class="btn-text">Find Auspicious Time <i class="fa-solid fa-arrow-right"></i></button>
       </div>
     </div>
-  </section>
+  </main>
 
-  <!-- Interactive Modal Container -->
-  <div class="modal-overlay" id="app-modal">
-    <div class="modal-content glass-card-modal">
-      <button class="close-btn" onclick="closeModal()">&times;</button>
+  <!-- Dynamic Pop-Up Modal -->
+  <div id="app-modal" class="modal-overlay">
+    <div class="modal-box">
+      <!-- Close Button -->
+      <button class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
 
-      <!-- Form View -->
+      <!-- VIEW 1: The Input Form -->
       <div id="modal-form-view">
-        <h2 id="modal-title" class="modal-heading">Porondum Compatibility Analysis</h2>
-        <p id="modal-desc" class="modal-subtext">Enter birth details for both individuals to generate the astrological synthesis.</p>
-
+        <h2 id="modal-title" class="mystic-title">Service Title</h2>
+        <p id="modal-desc" class="modal-subtitle">Service Description</p>
+        
         <form id="astro-form" onsubmit="handleFormSubmit(event)">
-          <div id="dynamic-fields">
-            <!-- Dynamic Form Fields Injected via JavaScript -->
+          <div id="dynamic-fields" class="form-grid">
+            <!-- JavaScript injects form fields here -->
           </div>
-          <button type="submit" class="gold-btn full-width mt-20">Generate Report</button>
+          <button type="submit" class="btn-glow">Consult the Stars <i class="fa-solid fa-wand-magic-sparkles"></i></button>
         </form>
       </div>
 
-      <!-- Loading View -->
-      <div id="modal-loading-view" class="hidden text-center">
-        <div class="cosmic-spinner"></div>
-        <h3 class="mt-20">Consulting Planetary Coordinates...</h3>
-        <p class="modal-subtext">Our AI engine is compiling your mathematical & astrological synthesis report.</p>
+      <!-- VIEW 2: The Loading State -->
+      <div id="modal-loading-view" class="hidden loading-state">
+        <div class="loader-ring"></div>
+        <h3 class="mystic-title">Reading the Constellations...</h3>
+        <p class="modal-subtitle">Our AI Astrologer is mapping planetary positions.</p>
       </div>
 
-      <!-- Results View -->
+      <!-- VIEW 3: The Result & PDF Area -->
       <div id="modal-result-view" class="hidden">
-        <div class="result-header">
-          <span class="badge-gold">SYNTHESIS COMPLETE</span>
-          <h2>Your Cosmic Report</h2>
+        <div id="pdf-export-area" class="cosmic-glass-box">
+          <div id="report-output-content">
+            <!-- AI Response Injected Here -->
+          </div>
         </div>
-        <div id="report-output-content" class="report-body">
-          <!-- AI Generated Text Injected Here -->
+        
+        <div class="action-buttons">
+          <button onclick="downloadPDF()" class="btn-glow btn-gold">
+            <i class="fa-solid fa-download"></i> Download Report (PDF)
+          </button>
+          <button onclick="closeModal()" class="btn-outline">
+            Close
+          </button>
         </div>
-        <button class="gold-btn-outline full-width mt-20" onclick="resetForm()">Perform Another Reading</button>
       </div>
+
     </div>
   </div>
 
