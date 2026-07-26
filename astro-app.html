@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Alignment - 20 Porondam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0B0C10;
+            color: #C5C6C7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: radial-gradient(circle at 50% 0%, #1f2833 0%, #0b0c10 70%);
+            min-height: 100vh;
+        }
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(31, 40, 51, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+        }
+        .glow-female { box-shadow: 0 0 20px rgba(152, 94, 255, 0.15); border-top: 2px solid #985eff; }
+        .glow-male { box-shadow: 0 0 20px rgba(102, 252, 241, 0.15); border-top: 2px solid #66FCF1; }
+        
+        /* Inputs */
+        input, select {
+            background: rgba(11, 12, 16, 0.8);
+            border: 1px solid #45A29E;
+            color: #fff;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            width: 100%;
+            margin-top: 0.25rem;
+        }
+        input:focus, select:focus { outline: none; border-color: #F2A900; box-shadow: 0 0 8px rgba(242, 169, 0, 0.5); }
+        
+        /* Button */
+        .btn-glow {
+            background: linear-gradient(90deg, #F2A900, #ff5e62);
+            color: #000;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover { box-shadow: 0 0 25px rgba(242, 169, 0, 0.6); transform: scale(1.02); }
+
+        /* Loader */
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #F2A900;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* East Indian Chart Placeholder */
+        .chart-box {
+            width: 160px; height: 160px;
+            border: 2px solid #66FCF1;
+            position: relative;
+            margin: 0 auto;
+            background: rgba(102, 252, 241, 0.05);
+        }
+        .chart-line { position: absolute; background: #66FCF1; }
+        .line-d1 { width: 141%; height: 2px; top: 0; left: 0; transform-origin: 0 0; transform: rotate(45deg); }
+        .line-d2 { width: 141%; height: 2px; top: 0; right: 0; transform-origin: 100% 0; transform: rotate(-45deg); }
+        .line-h { width: 100%; height: 2px; top: 50%; left: 0; }
+        .line-v { width: 2px; height: 100%; top: 0; left: 50%; }
+
+        /* Table */
+        th, td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem; text-align: left; }
+        th { color: #66FCF1; font-weight: 600; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#66FCF1] to-[#F2A900] mb-2">
+                Cosmic Alignment
+            </h1>
+            <p class="text-gray-400 text-lg">AI-Powered 20 Porondam Compatibility Analysis</p>
+        </header>
+
+        <!-- STEP 1: INPUT FORM -->
+        <form id="astroForm" class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Female Card -->
+                <div class="glass-card glow-female p-6">
+                    <h2 class="text-2xl text-[#985eff] mb-4 font-semibold flex items-center">
+                        <span class="text-3xl mr-2">♀</span> Female (ස්ත්‍රී)
+                    </h2>
+                    <div class="space-y-4">
+                        <div><label>Name</label><input type="text" required placeholder="Enter name"></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label>Date of Birth</label><input type="date" required></div>
+                            <div><label>Time of Birth</label><input type="time" required></div>
+                        </div>
+                        <div><label>Country of Birth</label><input type="text" required placeholder="e.g. Sri Lanka"></div>
+                        <div><label>City of Birth</label><input type="text" required placeholder="e.g. Colombo"></div>
+                    </div>
+                </div>
+
+                <!-- Male Card -->
+                <div class="glass-card glow-male p-6">
+                    <h2 class="text-2xl text-[#66FCF1] mb-4 font-semibold flex items-center">
+                        <span class="text-3xl mr-2">♂</span> Male (පුරුෂ)
+                    </h2>
+                    <div class="space-y-4">
+                        <div><label>Name</label><input type="text" required placeholder="Enter name"></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label>Date of Birth</label><input type="date" required></div>
+                            <div><label>Time of Birth</label><input type="time" required></div>
+                        </div>
+                        <div><label>Country of Birth</label><input type="text" required placeholder="e.g. Canada"></div>
+                        <div><label>City of Birth</label><input type="text" required placeholder="e.g. Toronto"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn-glow px-10 py-4 rounded-full text-xl shadow-lg mt-4 w-full md:w-auto">
+                    ✨ Calculate Compatibility (පොරොන්දම් පරීක්ෂාව) ✨
+                </button>
+            </div>
+        </form>
+
+        <!-- STEP 2: LOADING STATE -->
+        <div id="loadingState" class="hidden text-center py-20">
+            <div class="loader mb-6"></div>
+            <h3 class="text-2xl text-[#66FCF1] mb-2" id="loadingText">Mapping celestial coordinates...</h3>
+            <p class="text-gray-400">Consulting the AI and 20 Porondam algorithms</p>
+        </div>
+
+        <!-- STEP 3: RESULTS DASHBOARD -->
+        <div id="resultsDashboard" class="hidden space-y-10 animate-fade-in">
+            
+            <div class="text-center">
+                <button onclick="resetForm()" class="text-gray-400 hover:text-white mb-6">← Back to Edit Details</button>
+            </div>
+
+            <!-- Score -->
+            <div class="glass-card p-8 text-center max-w-3xl mx-auto">
+                <h2 class="text-5xl font-bold text-[#F2A900] mb-2">78% Match</h2>
+                <h3 class="text-2xl text-white mb-4">A Harmonious Union</h3>
+                <p class="text-gray-300 italic">"Your planetary alignments suggest a strong foundation of friendship and shared goals. While minor friction may arise due to Mars placement, your exceptional Nakath and Sthree Deerga compatibility promises a peaceful and enduring bond."</p>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                <div class="glass-card p-6">
+                    <h3 class="text-xl text-[#985eff] mb-6">Female Rasi Chart</h3>
+                    <div class="chart-box">
+                        <div class="chart-line line-d1"></div>
+                        <div class="chart-line line-d2"></div>
+                        <div class="chart-line line-h"></div>
+                        <div class="chart-line line-v"></div>
+                    </div>
+                </div>
+                <div class="glass-card p-6">
+                    <h3 class="text-xl text-[#66FCF1] mb-6">Male Rasi Chart</h3>
+                    <div class="chart-box">
+                        <div class="chart-line line-d1"></div>
+                        <div class="chart-line line-d2"></div>
+                        <div class="chart-line line-h"></div>
+                        <div class="chart-line line-v"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="glass-card overflow-x-auto p-4">
+                <table class="w-full min-w-[800px]">
+                    <thead>
+                        <tr>
+                            <th>Porondam</th>
+                            <th>Female</th>
+                            <th>Male</th>
+                            <th>Status</th>
+                            <th>AI Interpretation</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr>
+                            <td><strong>1. Nakath</strong> (Life goals)</td>
+                            <td>Aswida</td>
+                            <td>Ma</td>
+                            <td class="text-green-400">🟢 Auspicious</td>
+                            <td class="text-gray-300">Perfect alignment of life goals and mutual understanding.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Gana</strong> (Behavior)</td>
+                            <td>Deva</td>
+                            <td>Manushya</td>
+                            <td class="text-green-400">🟢 Auspicious</td>
+                            <td class="text-gray-300">Harmonious blend; the Deva nature nurtures the Manushya.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Mahendra</strong> (Fertility)</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td class="text-red-400">🔴 Inauspicious</td>
+                            <td class="text-gray-300">May require patience and mutual support in family planning.</td>
+                        </tr>
+                        <!-- More rows would be generated here by the backend -->
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-gray-500 italic">...Remaining 17 Porondams generated by AI...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center pb-10">
+                <button class="border border-[#F2A900] text-[#F2A900] hover:bg-[#F2A900] hover:text-black transition-colors px-6 py-2 rounded-full">
+                    📥 Download PDF Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        const form = document.getElementById('astroForm');
+        const loadingState = document.getElementById('loadingState');
+        const resultsDashboard = document.getElementById('resultsDashboard');
+        const loadingText = document.getElementById('loadingText');
+
+        const phrases = [
+            "Mapping celestial coordinates...",
+            "Aligning planetary positions...",
+            "Consulting the 20 Porondam...",
+            "Generating AI insights..."
+        ];
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page from refreshing
+            
+            // 1. Hide form, show loading
+            form.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+
+            // 2. Cycle loading text to make it feel magical
+            let phraseIndex = 0;
+            const interval = setInterval(() => {
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                loadingText.innerText = phrases[phraseIndex];
+            }, 800);
+
+            // 3. Simulate backend API & AI processing time (3 seconds)
+            /* 
+               NOTE FOR FUTURE: This is where you will eventually put your `fetch()` 
+               call to your Vercel Serverless Function (api/calculate) to get the 
+               real astrological math and Gemini/OpenAI response.
+            */
+            setTimeout(() => {
+                clearInterval(interval);
+                loadingState.classList.add('hidden');
+                resultsDashboard.classList.remove('hidden');
+            }, 3200);
+        });
+
+        function resetForm() {
+            resultsDashboard.classList.add('hidden');
+            form.classList.remove('hidden');
+            form.reset();
+        }
+    </script>
+</body>
+</html>
